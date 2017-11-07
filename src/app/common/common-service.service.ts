@@ -5,9 +5,11 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 
+//공통 서비스 클래스
 @Injectable()
 export class CommonServiceService {
 
+  //http header객체
   private headers = new Headers();
   private myParams = new URLSearchParams();
   private options = new RequestOptions({ headers: this.headers, params: this.myParams });

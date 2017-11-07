@@ -10,7 +10,6 @@ export class FunctionTestComponent implements OnInit {
 
   ngOnInit() {
   }
-
   
   testNormalFunction(){
     test();

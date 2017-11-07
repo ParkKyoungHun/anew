@@ -6,28 +6,56 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ArrowFunctionComponent implements OnInit {
   private title:string = "화살표 함수 테스트"
+  text : string = "테스트";
+
   constructor() { }
 
   ngOnInit() {
   }
-
   
-  testNormalFunction(){
-    test();
-    function test():void{
-      alert(1);
+  testNormalFunction1(){
+    let test = function():void{
+      alert(this.text);
     }
-  }
-
-  testLetFunction(){
-    let test;
     try{
       test();
-      test = function(){
-        alert(2);
-      }
     }catch(e){
-      console.log(e);
+      alert(e);
+    }
+  }
+  
+  testNormalFunction2(){
+    let test = function(obj):void{
+      alert(obj.text);
+    }
+    test(this);
+  }
+
+  testNormalFunction3(){
+    let _test = this;
+    let test = function():void{
+      alert(_test.text);
+    }
+    test();
+  }
+        
+  testNormalFunction4(){
+    let test = function():void{
+      alert(this.text);
+    }
+    test.bind(this)();
+  }
+
+  testNormalFunction5(){
+    let test = function():void{
+      alert(this.text);
+    }
+    test.call(this);
+  } 
+
+  testArrowFunction():void{
+    let test = ():void=>{
+      alert(this.text);
     }
     test();
   }
