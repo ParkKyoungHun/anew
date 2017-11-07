@@ -12,8 +12,7 @@ export class UserDataService extends CommonServiceService{
   }
   
   getUsers(searchUser:User): Observable<User[]> {
-    let paramMap:Map<string, Object> = new Map<string, Object>();
-    paramMap.set("user",JSON.stringify(searchUser));
-    return super.getJson(this.usersUrl, paramMap);
+    let paramStr:string  = '?user=' + JSON.stringify(searchUser);
+    return super.getJson(this.usersUrl+paramStr);
   }
 }

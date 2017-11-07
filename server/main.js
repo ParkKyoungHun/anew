@@ -17,21 +17,24 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(morgan('dev'));
-var printObj = function(obj){
-    console.log(typeof(obj));
-    console.log(obj.length);
-    for(var i=0,max=obj.length;i<max;i++){
-        console.log(obj[i]);
-    }
-}
-var printRequest = function(req){
-    printObj(req.param);
-    printObj(req.params);
-    printObj(req.query);
-    printObj(req.body);
+
+var generateWhere = function(paramObj){
+    var whereStr = '';
+    Object.keys(paramObj).forEach((key)=>{
+        whereStr += ' and ' + key + '=? ';
+    });
+    return whereStr;
 }
 
-app.get('/api/users/:userId,:testId',function(req, res, next){
+var generateWhereValue = function(paramObj){
+    var whereValue = [];
+    Object.keys(paramObj).forEach((key)=>{
+        whereValue.push(paramObj[key]);
+    });
+    return whereValue;
+}
+
+app.get('/api/users/:userId',function(req, res, next){
     console.log("11111");
     var sql = 'SELECT userNo, userName, userId, userPwd,complete from user_info where 1=1 ';
     var userId = req.params.userId;
@@ -40,25 +43,29 @@ app.get('/api/users/:userId,:testId',function(req, res, next){
         sql += ' and userId=?';
         values[values.length] = userId;
     }
-    connection.query(sql, values, function(err, rows) {
+    connection.query(sql, values, (err, rows)=> {
         if(err) throw err;
         console.log('The solution is: ', rows);
         res.json(rows);
     });
 });
-app.use(function (req, res, next) {
-    var url = req.path;
-    if(url==="/api/users"){
-        printRequest(req)
-        connection.query('SELECT userNo, userName, userId, userPwd,complete from user_info', function(err, rows) {
-            if(err) throw err;
-            console.log('The solution is: ', rows);
-            res.json(rows);
-          });
-    }else {
-        // redirect all html requests to `index.html`
-        res.sendFile(path.resolve(__dirname + '/../dist/index.html'));
-    }
+app.get('/api/users',(req, res, next)=>{
+    var result = {};
+    var paramObj = JSON.parse(req.query.user);
+    var sql = 'SELECT userNo, userName, userId, userPwd,complete from user_info where 1=1 '
+    sql += generateWhere(paramObj);
+    var values = generateWhereValue(paramObj);
+
+    connection.query(sql, values, (err, rows)=>{
+        if(err) throw err;
+        console.log(rows);
+        result["list"] = rows;
+        res.json(result);
+    });
+});
+
+app.use((req, res, next)=>{
+    res.sendFile(path.resolve(__dirname + '/../dist/index.html'));
 });
 
 app.listen(app.get('port'), function() {

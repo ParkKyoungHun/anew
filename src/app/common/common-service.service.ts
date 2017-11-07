@@ -16,6 +16,7 @@ export class CommonServiceService {
 
   constructor(protected _http:Http) {
     this.headers.append('Content-Type', 'application/json; charset=utf-8');
+    this.headers.append('Accept', 'application/json; charset=utf-8');
   }
 
   protected setInitHeaders(headers:Map<string,string>){
@@ -26,13 +27,24 @@ export class CommonServiceService {
     });
   }
 
-  getJson(url:string, paramMap?:Map<string,any>):Observable<any>{
-    if(paramMap){
-      paramMap.forEach((element,key)=>{
-        this.myParams.append(key, element);
-      })
-    }
-    let options = new RequestOptions({ headers: this.headers, params: this.myParams });
+  protected generateParamFromMap(paramMap:Map<string,any>):string{
+    let paramStr : string = '?';
+    paramMap.forEach((element,key)=>{
+      paramStr += key +'=' + element + '&';
+    })
+    return paramStr.substr(0,paramStr.length-1);
+  }
+
+  protected generateParamFromObject(paramMap:Object):string{
+    let paramStr : string = '?';
+    Object.keys(paramMap).forEach((key)=>{
+      paramStr += key +'=' + paramMap[key] + '&';
+    })
+    return paramStr.substr(0,paramStr.length-1);
+  }
+
+  protected getJson(url:string):Observable<any>{
+    let options = new RequestOptions({ headers: this.headers });
     return this._http.get(url, options)
                     .map(this.extractJson)
                     .catch(this.handleError);
@@ -43,8 +55,7 @@ export class CommonServiceService {
   }  
 
   private handleError (error: Response | any) {
-    let errMsg: string = "error";
-    console.error(errMsg);
+    let errMsg: string = error;
     return Promise.reject(errMsg);
   }
  

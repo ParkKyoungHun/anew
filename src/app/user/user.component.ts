@@ -20,11 +20,14 @@ export class UserComponent implements OnInit {
   
   getUsers():void{
     this.uds.getUsers(this.searchUser).subscribe(
-      users => {
-        this.userList = users
-        console.log(users);
+      datas => {
+        console.log(datas);
+        this.userList = datas["list"];
       },
-      error =>  this.errorMsg = <any>error);
+      error =>  {
+        this.errorMsg = <any>error;
+        alert(this.errorMsg);
+      });
   }
 
   showHideAddUserDiv():void{
