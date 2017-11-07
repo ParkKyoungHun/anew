@@ -14,13 +14,13 @@ export class PromiseTestComponent implements OnInit {
         this.initLog();
     }
 
-    setLog(text:string){
+    private setLog(text:string){
         let log:ProLog = new ProLog();
         log.num = this.logList.length+1;
         log.text = text;
         this.logList.push(log);
     }
-    initLog(){
+    private initLog(){
         this.logList = [];
     }
     ngOnInit() {
@@ -28,9 +28,8 @@ export class PromiseTestComponent implements OnInit {
   
     num : number = 0;
     setTime(text:string,time:number,func?:Function):void{
-        let obj = this;
-        setTimeout(function(){
-            obj.setLog(text);
+        setTimeout(()=>{
+            this.setLog(text);
             if(func){
                 func();
             }
@@ -38,14 +37,12 @@ export class PromiseTestComponent implements OnInit {
     }
 
     getPromise(text:string,time:number,errorMsg?:string):Promise<{}>{
-        let ojb = this;
-        return new Promise(function(resolved,rejected){  
-            setTimeout(           
-                function(){
+        return new Promise((resolved,rejected)=>{  
+            setTimeout(()=>{
                     if(errorMsg){
                         rejected(errorMsg);
                     }else{
-                        ojb.setLog(text);
+                        this.setLog(text);
                         resolved();
                     }
                 },2000);    
@@ -53,15 +50,14 @@ export class PromiseTestComponent implements OnInit {
     }
     testAsync():void{
         this.initLog();
-        let obj = this;
-        let test1= function() :void{
-            obj.setTime('test1',2000);
+        let test1 = ():void =>{
+            this.setTime('test1',2000);
         }
-        let test2= function() :void{
-            obj.setTime('test2',1000);
+        let test2 = ():void =>{
+            this.setTime('test2',1000);
         }
-        let printLog = function(){
-            obj.setLog("test1 and test2 done");
+        let printLog = ():void =>{
+            this.setLog("test1 and test2 done");
         }
         test1();
         test2();
@@ -70,30 +66,28 @@ export class PromiseTestComponent implements OnInit {
 
     testSync():void{
         this.initLog();
-        let obj = this;
-        let test1= function(func:Function) :void{
-            obj.setTime('test1',2000,func);
+        let test1= (func:Function) : void =>{
+            this.setTime('test1',2000,func);
         }
-        let test2= function(func:Function) :void{
-            obj.setTime('test2',1000,func);
+        let test2= (func:Function) : void =>{
+            this.setTime('test2',1000,func);
         }
-        let printLog = function(){
-            obj.setLog("test1 and test2 done");
+        let printLog = () : void =>{
+            this.setLog("test1 and test2 done");
         }
         test1(test2.bind(null, printLog));
     }
 
     testPromise():void{
         this.initLog();
-        let obj = this;
         let test1 = this.getPromise.bind(this,'test1',2000);
         let test2 = this.getPromise.bind(this,'test2',1000,'test2Error');
         let test3 = this.getPromise.bind(this,'test3',1000);
-        let test4= function() :void{
-            obj.setLog('test4');
+        let test4= () :void =>{
+            this.setLog('test4');
         }
-        let printLog = function(){
-            obj.setLog("test1 and test2 done");
+        let printLog = () => {
+            this.setLog("test1 and test2 done");
         }
 
         test1()
@@ -101,7 +95,7 @@ export class PromiseTestComponent implements OnInit {
         .then(printLog)
         .catch( 
             (result:string)=>{
-                obj.setLog(result);
+                this.setLog(result);
             }
         )
         .then(test3).
@@ -116,7 +110,7 @@ export class PromiseTestComponent implements OnInit {
         .then(printLog)
         .catch(
             (result:string)=>{
-                obj.setLog(result);
+                this.setLog(result);
             }
         );
     }
