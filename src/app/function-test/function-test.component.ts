@@ -11,23 +11,36 @@ export class FunctionTestComponent implements OnInit {
   ngOnInit() {
   }
   
-  testNormalFunction(){
+  testFunctionDeclarartion(){
     test();
     function test():void{
       alert(1);
     }
   }
-
-  testLetFunction(){
-    let test;
-    try{
-      test();
-      test = function(){
-        alert(2);
+  
+    tesAnonymoustExpression(){
+      let test;
+      try{
+        test();
+        test = function(){
+          alert(2);
+        }
+      }catch(e){
+        alert(e);
       }
-    }catch(e){
-      alert(e);
+      test();
     }
-    test();
-  }
+    
+    testNamedFunction(){
+        let test;
+        try{
+          test();
+          test = function test2(){
+            alert(2);
+          }
+        }catch(e){
+          alert(e);
+        }
+        test();
+      }
 }
