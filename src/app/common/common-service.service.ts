@@ -50,8 +50,20 @@ export class CommonServiceService {
                     .catch(this.handleError);
   }
 
+  protected postJson(url:string,parmaObj:Object):Observable<any>{
+    let options = new RequestOptions({ headers: this.headers });
+    return this._http.get(url, options)
+                    .map(this.extractJson)
+                    .catch(this.handleError);
+  }
   private extractJson(res: Response) {
-    return res.json() || { };
+    let result = res.json();
+    if(result.error){
+      let err = result.error;
+      throw ("[" + err.no + ":" + err.code + "] " + err.msg);
+
+    }
+    return result || { };
   }  
 
   private handleError (error: Response | any) {

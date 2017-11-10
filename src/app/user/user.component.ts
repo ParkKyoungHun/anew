@@ -43,7 +43,29 @@ export class UserComponent implements OnInit {
         alert(this.errorMsg);
       });
   }
-
+  outputUserP(user:User):void{
+    this.uds.addUser(user).subscribe(
+      datas => {
+        console.log(datas);
+        this.userList = datas["list"];
+      },
+      error =>  {
+        this.errorMsg = <any>error;
+        alert(this.errorMsg);
+      });
+  }
+  
+  getUsers2():void{
+    this.uds.getUsers(this.searchUser,'2').subscribe(
+      datas => {
+        console.log(datas);
+        this.userList = datas["list"];
+      },
+      error =>  {
+        this.errorMsg = <any>error;
+        alert(this.errorMsg);
+      });
+  }
   showHideAddUserDiv():void{
     this.addUserBtnStr='Show Add User Div';
     this.addUserShow = !this.addUserShow;

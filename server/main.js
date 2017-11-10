@@ -1,11 +1,14 @@
-var express = require('express');
-var morgan = require('morgan'); 
-var bodyParser = require('body-parser');
-var path = require("path");
-var app = express();
-var dbConfig   = require('./conf/dbconfig.js');
+const express = require('express');
+const morgan = require('morgan'); 
+const bodyParser = require('body-parser');
+const path = require("path");
+const app = express();
+const dbConfig   = require('./conf/dbconfig.js');
 const mysql = require('mysql');
+const mysql2 = require('promise-mysql');
+
 var connection = mysql.createConnection(dbConfig);
+var connection2 = mysql2.createConnection;
 
 app.set('port', (process.env.PORT || 80));
 
@@ -55,15 +58,55 @@ app.get('/api/users',(req, res, next)=>{
     var sql = 'SELECT userNo, userName, userId, userPwd,complete from user_info where 1=1 '
     sql += generateWhere(paramObj);
     var values = generateWhereValue(paramObj);
-
     connection.query(sql, values, (err, rows)=>{
         if(err) throw err;
         console.log(rows);
         result["list"] = rows;
         res.json(result);
     });
+    next();
+})
+
+var errorHandle = (err)=>{
+    var result = {};
+    result["error"] = {"code" : err.code,
+    "no" : err.errno,
+    "msg" : err.sqlMessage
+    };
+    return result;
+}
+
+var rowsHandle = (rows)=>{
+    var result = {};
+    result["list"] = rows;
+    return result;
+}
+
+app.get('/api/users2',(req, res, next)=>{
+    var paramObj = JSON.parse(req.query.user);
+    var sql = 'SELECT userNo, userName, userId, userPwd,complete from user_info where 1=1 '
+    sql += generateWhere(paramObj);
+    var values = generateWhereValue(paramObj);
+    connection2(dbConfig).then((conn)=>{
+        return conn.query(sql, values);
+    })
+    .then(rowsHandle)
+    .catch(errorHandle)
+    .then((result)=>{
+        console.log(result);
+        res.json(result);
+        next();
+    });
 });
 
+app.get('/api/users',(req, res, next)=>{
+    console.log('next!!');
+})
+
+
+app.get('/api/users2',(req, res, next)=>{
+    console.log('next!!');
+})
 app.use((req, res, next)=>{
     res.sendFile(path.resolve(__dirname + '/../dist/index.html'));
 });

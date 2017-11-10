@@ -7,12 +7,22 @@ import {User} from'./user';
 @Injectable()
 export class UserDataService extends CommonServiceService{
   private usersUrl:string="api/users";
+
   constructor(protected _http:Http) {
     super(_http);
   }
   
-  getUsers(searchUser:User): Observable<User[]> {
+  getUsers(searchUser:User,pUrl?:string): Observable<User[]> {
     let paramStr:string  = '?user=' + JSON.stringify(searchUser);
-    return super.getJson(this.usersUrl+paramStr);
+    let url : string = this.usersUrl;
+    if(pUrl){
+      url += pUrl;
+    }
+    return super.getJson(url+paramStr);
+  }
+
+  addUser(addUser:User): Observable<User[]> {
+    let paramStr:string  = '?user=' + JSON.stringify(addUser);
+    return super.postJson(this.usersUrl,paramStr);
   }
 }

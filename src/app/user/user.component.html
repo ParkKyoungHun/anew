@@ -3,9 +3,10 @@
     id : <input type="text" [(ngModel)]="searchUser.userId"/>
     pwd : <input type="text" [(ngModel)]="searchUser.userPwd"/>
     complete : <input type="checkbox" [(ngModel)]="searchUser.complete"/>
-<button  (click)="getUsers()">getUsers</button>
+    <button  (click)="getUsers()">getUsers</button>
+    <button  (click)="getUsers2()">getUsers2</button>
 <button  (click)="showHideAddUserDiv()">{{addUserBtnStr}}</button><br><br>
-<app-user-insert (outputUser)="outputUser($event)" [addUserShow]="addUserShow"></app-user-insert>
+<app-user-insert (outputUser)="outputUserP($event)" [addUserShow]="addUserShow"></app-user-insert>
 </div>
 <div class="container">
   <h2>{{title}}</h2>
