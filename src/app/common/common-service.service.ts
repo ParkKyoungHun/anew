@@ -12,7 +12,7 @@ export class CommonServiceService {
   //http header객체
   private headers = new Headers();
   private myParams = new URLSearchParams();
-  private options = new RequestOptions({ headers: this.headers, params: this.myParams });
+  private options;
 
   constructor(protected _http:Http) {
     this.headers.append('Content-Type', 'application/json; charset=utf-8');
@@ -22,15 +22,13 @@ export class CommonServiceService {
   protected setInitHeaders(headers:Map<string,string>){
     headers.forEach((element,key) => {
       this.headers.append(key, element);
-      console.log("key" + key);
-      console.log("element" + element);
     });
   }
 
   protected generateParamFromMap(paramMap:Map<string,any>):string{
-    let paramStr : string = '?';
+    let paramStr : string = '';
     paramMap.forEach((element,key)=>{
-      paramStr += key +'=' + element + '&';
+      paramStr += key +'=' + JSON.stringify(element) + '&';
     })
     return paramStr.substr(0,paramStr.length-1);
   }
@@ -44,24 +42,24 @@ export class CommonServiceService {
   }
 
   protected getJson(url:string):Observable<any>{
-    let options = new RequestOptions({ headers: this.headers });
+    let options = new RequestOptions({ headers: this.headers});
     return this._http.get(url, options)
                     .map(this.extractJson)
                     .catch(this.handleError);
   }
 
-  protected postJson(url:string,parmaObj:Object):Observable<any>{
-    let options = new RequestOptions({ headers: this.headers });
-    return this._http.get(url, options)
-                    .map(this.extractJson)
-                    .catch(this.handleError);
+  protected postJson(url:string,paramObj:Object):Observable<any>{
+    return this._http.post(url,
+          paramObj,
+          {headers: this.headers})
+          .map(this.extractJson)
+          .catch(this.handleError);
   }
   private extractJson(res: Response) {
     let result = res.json();
     if(result.error){
       let err = result.error;
       throw ("[" + err.no + ":" + err.code + "] " + err.msg);
-
     }
     return result || { };
   }  

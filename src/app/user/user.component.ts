@@ -43,7 +43,7 @@ export class UserComponent implements OnInit {
         alert(this.errorMsg);
       });
   }
-  outputUserP(user:User):void{
+  addUser(user:User):void{
     this.uds.addUser(user).subscribe(
       datas => {
         console.log(datas);

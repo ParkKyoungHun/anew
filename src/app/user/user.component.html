@@ -6,7 +6,7 @@
     <button  (click)="getUsers()">getUsers</button>
     <button  (click)="getUsers2()">getUsers2</button>
 <button  (click)="showHideAddUserDiv()">{{addUserBtnStr}}</button><br><br>
-<app-user-insert (outputUser)="outputUserP($event)" [addUserShow]="addUserShow"></app-user-insert>
+<app-user-insert (outputUser)="addUser($event)" [addUserShow]="addUserShow"></app-user-insert>
 </div>
 <div class="container">
   <h2>{{title}}</h2>

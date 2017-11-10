@@ -22,7 +22,6 @@ export class UserDataService extends CommonServiceService{
   }
 
   addUser(addUser:User): Observable<User[]> {
-    let paramStr:string  = '?user=' + JSON.stringify(addUser);
-    return super.postJson(this.usersUrl,paramStr);
+    return super.postJson(this.usersUrl,addUser);
   }
 }

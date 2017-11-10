@@ -37,6 +37,21 @@ var generateWhereValue = function(paramObj){
     return whereValue;
 }
 
+var errorHandle = (err)=>{
+    var result = {};
+    result["error"] = {"code" : err.code,
+    "no" : err.errno,
+    "msg" : err.sqlMessage
+    };
+    return result;
+}
+
+var rowsHandle = (rows)=>{
+    var result = {};
+    result["list"] = rows;
+    return result;
+}
+
 app.get('/api/users/:userId',function(req, res, next){
     console.log("11111");
     var sql = 'SELECT userNo, userName, userId, userPwd,complete from user_info where 1=1 ';
@@ -67,21 +82,6 @@ app.get('/api/users',(req, res, next)=>{
     next();
 })
 
-var errorHandle = (err)=>{
-    var result = {};
-    result["error"] = {"code" : err.code,
-    "no" : err.errno,
-    "msg" : err.sqlMessage
-    };
-    return result;
-}
-
-var rowsHandle = (rows)=>{
-    var result = {};
-    result["list"] = rows;
-    return result;
-}
-
 app.get('/api/users2',(req, res, next)=>{
     var paramObj = JSON.parse(req.query.user);
     var sql = 'SELECT userNo, userName, userId, userPwd,complete from user_info where 1=1 '
@@ -107,6 +107,13 @@ app.get('/api/users',(req, res, next)=>{
 app.get('/api/users2',(req, res, next)=>{
     console.log('next!!');
 })
+app.post('/api/users',(req, res, next)=>{
+    for(var key in req.body){
+        console.log(key);
+        console.log(req.body[key]);
+    }
+})
+
 app.use((req, res, next)=>{
     res.sendFile(path.resolve(__dirname + '/../dist/index.html'));
 });
