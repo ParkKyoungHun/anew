@@ -70,16 +70,19 @@ app.get('/api/users/:userId',function(req, res, next){
 app.get('/api/users',(req, res, next)=>{
     var result = {};
     var paramObj = JSON.parse(req.query.user);
+    console.log("param=" + paramObj);
     var sql = 'SELECT userNo, userName, userId, userPwd,complete from user_info where 1=1 '
     sql += generateWhere(paramObj);
+    console.log(sql);
     var values = generateWhereValue(paramObj);
+    console.log(values);
     connection.query(sql, values, (err, rows)=>{
         if(err) throw err;
-        console.log(rows);
+        console.log("rows=>" + rows);
         result["list"] = rows;
         res.json(result);
+        next();
     });
-    next();
 })
 
 app.get('/api/users2',(req, res, next)=>{
@@ -97,6 +100,11 @@ app.get('/api/users2',(req, res, next)=>{
         res.json(result);
         next();
     });
+});
+
+app.get('/api/users',(req,res,next)=>{
+    console.log(req.query.user);
+    next();
 });
 
 app.get('/api/users',(req, res, next)=>{
