@@ -37,6 +37,7 @@ var generateWhereValue = function(paramObj){
     return whereValue;
 }
 var errorHandle = (err)=>{
+    console.log(err);
     var result = {};
     result["error"] = {"code" : err.code,
     "no" : err.errno,
@@ -113,37 +114,44 @@ var insertUser =(sql, value)=>{
     });
 }
 app.post('/api/users',(req,res,next)=>{
-    var sql = "insert into user_info(";
-    sql += "userId, userName, userPwd, complete)";
-    sql += "values(?,?,?,?)";
-    var pm = req.body;
-    var values = [pm.userId, pm.userName, pm.userPwd, pm.complete];
-    var result = {};
-    connection2(dbConfig).then((con)=>{
-        console.log("insertSql : " + sql);
+    var sql = "select 1 from user_info where userId=?";
+    var values = [req.body.userId];
+    connection2(dbConfig)
+    .then((con)=>{
         return con.query(sql,values);
+    })
+    .then((result)=>{
+        if(result.length>0){
+            throw {"code":"중복에러","errno":1,"sqlMessage":req.body.userId+"이거 있어! 에러야임마!!"};
+        }
+        return true;
+    }).then(()=>{
+        sql = "insert into user_info(";
+        sql += "userId, userName, userPwd, complete)";
+        sql += "values(?,?,?,?)";
+        var pm = req.body;
+        var values = [pm.userId, pm.userName, pm.userPwd, pm.complete];
+        var result = {};
+        return connection2(dbConfig).then((con)=>{
+            return con.query(sql,values);
+        })
     }).then((result)=>{
         console.log(result);
         if(result.affectedRows==1){
-            result["msg"] = {
-            "code" : 200,
-            "msg" : "정상적으로 입력되었습니다."
-            };
+            var sql = "select userNo, userName,userId,userPwd,complete from user_info";
+            return connection2(dbConfig).then((conn)=>{
+                return conn.query(sql);
+            })
+            .then(rowsHandle);
+        }else{
+            throw {"code":"몰름","errno":2,"sqlMessage":"이유는 모르겠고 안드갔는데?"};
         }
-        return result;
-    }).catch(errorHandle).
-    then((result)=>{
-        sql = 'SELECT userNo, userName, userId, userPwd,complete from user_info where 1=1 '
-        connection2(dbConfig).then((conn)=>{
-            return conn.query(sql);
-        })
-        .then(rowsHandle)
-        .catch(errorHandle)
-        .then((result)=>{
-            console.log(result);
-            res.json(result);
-        });
     })
+    .catch(errorHandle)
+    .then((result)=>{
+        console.log(result);
+        res.json(result);
+    });
    
 })
 app.post('/api/users',(req, res, next)=>{
