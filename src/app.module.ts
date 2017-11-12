@@ -8,6 +8,8 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {AppComponent} from './app/app.component';
 import {enableProdMode} from '@angular/core';
 import{AppRoutingModule, RoutingComponents}from './app-routing.module';
+import { UserHistoryComponent } from './app/user-history/user-history.component';
+import { UserHisComponent } from './app/user-his/user-his.component';
 
 enableProdMode();
 
@@ -18,7 +20,9 @@ enableProdMode();
     		  FormsModule,
     		  ReactiveFormsModule],
     declarations: [AppComponent,
-              RoutingComponents],
+              RoutingComponents,
+              UserHistoryComponent,
+              UserHisComponent],
     //providers: [],
     bootstrap: [AppComponent]
 })
