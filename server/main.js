@@ -78,6 +78,7 @@ var parseSql = (sql,values)=>{
         paramIds[paramIds.length] = strs[1];
     }
     console.log(paramIds);
+    console.log(values);
     if(paramIds.length>0){
         if(!values){
             for(var key in paramIds){
@@ -85,7 +86,9 @@ var parseSql = (sql,values)=>{
             }
         }else{
             for(var key in paramIds){
-                if(!values[key]){
+                console.log(!values[paramIds[key]]);
+                if(!values[paramIds[key]]){
+                    console.log(1);
                     sql = sql.replace(sqls[key],' 1=1 ');
                 }else{
                     paramValue[paramValue.length] = values[paramIds[key]];
