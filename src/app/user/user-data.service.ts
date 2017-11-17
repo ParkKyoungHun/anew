@@ -9,7 +9,7 @@ import {UserHis} from'./user-his';
 @Injectable()
 export class UserDataService extends CommonServiceService{
   private usersUrl:string="api/users";
-  private userHisUrl = '/api/userhis/';
+  private userHisUrl:string = this.usersUrl + '/his/';
 
   constructor(protected _http:Http) {
     super(_http);

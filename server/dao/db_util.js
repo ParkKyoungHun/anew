@@ -21,7 +21,7 @@ module.exports=function(){
         });
         return whereValue;
     }
-    errorHandle = (err)=>{
+    var errorHandle = function(err){
         var result = {};
         result["error"] = {"code" : err.code,
         "no" : err.errno,
@@ -29,20 +29,24 @@ module.exports=function(){
         };
         return result;
     }
-    var rowsHandle = (rows)=>{
+    var rowsHandle = function(rows){
         var result = {};
         result["list"] = rows;
         return result;
     }
 
-    this.promiseException = (err)=>{
+    this.promiseException = function(err){
         return new Promise((resolved,rejected)=>{  
               var result =  errorHandle(err);
-              return rejected(result);
+              return resolved(result);
         });
     }
 
-    var parseSql = (sql,values)=>{
+    var parseSqlForSelect = function(sqlId,values){
+        var sql = sqlMap[sqlId];
+        if(!sql){
+            throw 'sql이 없습니다. ' + sqlId + '를 확인해주세요.';
+        }
         var paramValue = [];
         var paramIds = [];
         var sqls = [];
@@ -74,14 +78,28 @@ module.exports=function(){
         }
         return {'sql' : sql, 'values':paramValue};
     }
-    
-    this.runSql = (sqlId, values)=>{
+    var parseSqlForUpdate = function(sqlId,values){
         var sql = sqlMap[sqlId];
+        if(!sql){
+            throw 'sql이 없습니다. ' + sqlId + '를 확인해주세요.';
+        }
+        var paramValue = [];
+        var paramIds = [];
+        var sqls = [];
+        console.log(sql);
+        while(rexStr.test(sql)){
+            var paramId = rexStr.exec(sql)[0];
+            console.log(paramId);
+            var str = paramId.replace(/#/gi,'');
+            var changeStr =  ' ? ';
+            sql = sql.replace(paramId,changeStr);
+            paramValue[paramValue.length] = values[str];
+        }
+        return {'sql' : sql, 'values':paramValue};
+    }
+    this.runSql = function(sqlId, values){
         try{
-            if(!sql){
-                throw 'sql이 없습니다. ' + sqlId + '를 확인해주세요.';
-            }
-            var sqlObj = parseSql(sql,values);
+            var sqlObj = parseSqlForSelect(sqlId,values);
             console.log(sqlObj);
             return con.then((conn)=>{
                 return conn.query(sqlObj.sql, sqlObj.values);
@@ -92,7 +110,17 @@ module.exports=function(){
             throw e;
         }
     }
-    this.updateSql = (sqlId,values)=>{
-        
+    this.updateSql = function(sqlId,values){
+        try{
+            var sqlObj = parseSqlForUpdate(sqlId,values);
+            console.log(sqlObj);
+            return con.then((conn)=>{
+                return conn.query(sqlObj.sql, sqlObj.values);
+                })
+                .then(rowsHandle)
+                .catch(errorHandle);
+        }catch(e){
+            throw e;
+        }
     }
 }

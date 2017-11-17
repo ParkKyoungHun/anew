@@ -8,5 +8,7 @@ module.exports = {
     ' and #complete=complete#',
     'INSERT_USER':
     'insert into user_info(userId, userName, userPwd, complete)'+
-    'values(?,?,?,?)'
+    'values(#userId#, #userName#, #userPwd#, #complete#)',
+    'SELECT_USER_HIS':
+    'select userNo, userData from user_his where #userNo=userNo#'
 };
