@@ -18,11 +18,22 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(morgan('dev'));
 
-app.use('/api/users',(req,res,next)=>{
-    us.selectUser(req,res,next)
+app.get('/api/users',(req,res,next)=>{
+    var po = JSON.parse(req.query.user);
+    console.log(po);
+    us.selectUser(req,res,po)
     .then((result)=>{
         res.json(result);
     });
+});
+app.post('/api/users',(req,res,next)=>{
+    us.insertUser(req,res,req.body)
+    .then((result)=>{
+        res.json(result);
+    });
+    // .then((result)=>{
+    //     res.json(result);
+    // });
 });
 
 app.use((req, res, next)=>{

@@ -1,8 +1,12 @@
 module.exports = {
-    "SELECT_USER" : 
+    'SELECT_USER' : 
     'select userNo, userName, userId, userPwd, complete from user_info where  1'+
     ' and #userId=userId#'+
-    ' and #userName=userPwd#'+
+    ' and #userName=userName#'+
+    ' and #userPwd=userPwd#'+
     ' and #userNo=userNo#'+
     ' and #complete=complete#',
+    'INSERT_USER':
+    'insert into user_info(userId, userName, userPwd, complete)'+
+    'values(?,?,?,?)'
 };

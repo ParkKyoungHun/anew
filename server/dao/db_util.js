@@ -21,8 +21,7 @@ module.exports=function(){
         });
         return whereValue;
     }
-    var errorHandle = (err)=>{
-        console.log(err);
+    errorHandle = (err)=>{
         var result = {};
         result["error"] = {"code" : err.code,
         "no" : err.errno,
@@ -36,6 +35,12 @@ module.exports=function(){
         return result;
     }
 
+    this.promiseException = (err)=>{
+        return new Promise((resolved,rejected)=>{  
+              var result =  errorHandle(err);
+              return rejected(result);
+        });
+    }
 
     var parseSql = (sql,values)=>{
         var paramValue = [];
@@ -70,14 +75,6 @@ module.exports=function(){
         return {'sql' : sql, 'values':paramValue};
     }
     
-
-    var insertUser =(sql, value)=>{
-        connection(dbConfig).then((conn)=>{
-            console.log(sql);
-            return conn.query(sql, values);
-        }); 
-    }
-
     this.runSql = (sqlId, values)=>{
         var sql = sqlMap[sqlId];
         try{
@@ -94,5 +91,8 @@ module.exports=function(){
         }catch(e){
             throw e;
         }
+    }
+    this.updateSql = (sqlId,values)=>{
+        
     }
 }

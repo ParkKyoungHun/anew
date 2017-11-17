@@ -75,11 +75,6 @@ export class UserComponent implements OnInit {
       });
   }
   showHideAddUserDiv():void{
-    let sql:string = "select userNo, userName, userId, userPwd, complete from user_info where  #userPwd=userPwd#";
-    sql = "#userPwd=userPwd#";
-    sql = sql.replace(/#/gi,'');
-    let sqls = sql.split(/[=|<|>|<=|>=]/);
-    alert(sqls);
     this.addUserBtnStr='Show Add User Div';
     this.addUserShow = !this.addUserShow;
     if(this.addUserShow)
