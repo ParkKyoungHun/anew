@@ -8,7 +8,7 @@ import {User} from'../app/user/user';
 @Injectable()
 export class LoginService extends CommonServiceService{
   private loginUrl:string="api/users/login";
-
+//ng g s Login
   constructor(protected _http:Http) {
     super(_http);
   }

@@ -105,7 +105,7 @@ module.exports=function(){
                 return conn.query(sqlObj.sql, sqlObj.values);
                 })
                 .then(rowsHandle)
-                .catch(errorHandle);
+                .catch(this.promiseException);
         }catch(e){
             throw e;
         }

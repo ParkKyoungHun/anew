@@ -5,8 +5,11 @@ import { Component, OnInit } from '@angular/core';
   template: require('./function-test.component.html')
 })
 export class FunctionTestComponent implements OnInit {
-  private title:string = "함수 테스트"
-  constructor() { }
+  private title:string = "함수 테스트";
+  userName:string;
+  constructor() { 
+    this.userName = localStorage.getItem('userName');
+  }
 
   ngOnInit() {
   }

@@ -32,6 +32,10 @@ export class UserComponent implements OnInit {
     this.uds.getUsersHis(userNo).subscribe(
       datas => {
         console.log(datas);
+        if(datas['error']){
+          alert(datas['error']);
+          return;
+        }
         this.userHisList = datas["list"];        
       },
       error =>  {
@@ -55,6 +59,13 @@ export class UserComponent implements OnInit {
     this.uds.addUser(user).subscribe(
       datas => {
         console.log(datas);
+        if(datas["error"]){
+          alert(datas["error"]);
+          return;
+        }
+        if(datas["msg"]){
+          alert(datas["msg"]);
+        }
         this.userList = datas["list"];
       },
       error =>  {

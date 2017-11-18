@@ -1,6 +1,6 @@
 module.exports = {
     'SELECT_USER' : 
-    'select userNo, userName, userId, userPwd, complete from user_info where  1'+
+    'select userNo, userName, userId, userPwd, complete from user_info where  1=1'+
     ' and #userId=userId#'+
     ' and #userName=userName#'+
     ' and #userPwd=userPwd#'+
@@ -10,5 +10,5 @@ module.exports = {
     'insert into user_info(userId, userName, userPwd, complete)'+
     'values(#userId#, #userName#, #userPwd#, #complete#)',
     'SELECT_USER_HIS':
-    'select userNo, userData from user_his where #userNo=userNo#'
+    'select userNo1, userData from user_his where #userNo=userNo#'
 };

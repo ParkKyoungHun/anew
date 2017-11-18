@@ -10,6 +10,34 @@ var us = require('../service/user_service');
  
 module.exports = router;
 
+function selectUser(req,res,next){
+    var po = {}
+    if(req.query.user){
+        po = JSON.parse(req.query.user);
+    }
+    console.log(po);
+    us.selectUser(po)
+    .then((result)=>{
+        console.log(result);
+        res.json(result);
+    }).catch(result=>{
+        console.log(result);
+        res.json(result);
+    });
+}
+
+function selectUserHis(req,res,next){
+    var po = {"userNo":req.params.userNo};
+    us.selectUserHis(po)
+    .then((result)=>{
+        console.log(result);
+        res.json(result);
+    }).catch(result=>{
+        console.log(result);
+        res.json(result);
+    });
+} 
+
 function login(req,res,next){
     var po = {}
     if(req.query.user){
@@ -24,35 +52,19 @@ function login(req,res,next){
         res.json(result);
     });
 }
-function selectUser(req,res,next){
-    var po = {}
-    if(req.query.user){
-        po = JSON.parse(req.query.user);
-    }
-    console.log(po);
-    us.selectUser(po)
-    .then((result)=>{
-        res.json(result);
-    }).catch(result=>{
-        res.json(result);
-    });
-}
-
 function insertUser(req,res,next){
     us.insertUser(req.body)
     .then((result)=>{
-        res.json(result);
+        if(result["list"].affectedRows==1){
+            us.selectUser({})
+            .then(result=>{
+                result["msg"] = "유저가 정상적으로 생성되었습니다.";
+                console.log(result);
+                res.json(result);
+            });
+        }
     }).catch(result=>{
+        console.log(result);
         res.json(result);
     })
 }
-
-function selectUserHis(req,res,next){
-    var po = {"userNo":req.params.userNo};
-    us.selectUserHis(po)
-    .then((result)=>{
-        res.json(result);
-    }).catch(result=>{
-        res.json(result);
-    });
-} 
